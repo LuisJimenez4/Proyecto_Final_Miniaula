@@ -8,12 +8,12 @@
 
 | Campo | Valor |
 |---|---|
-| Fase | **Backend completo (Fases 1–5)**; falta repo git, frontend y entrega |
-| Última tarea cerrada | B5-02 — README (2026-11-15); todas las B1–B5 cerradas (`odd/tasks/`) |
-| Tarea en curso | — |
-| **Siguiente tarea** | **Revisión del juez (Opus) del diff de B1–B5** y luego **F0-02 — remoto en GitHub** → `odd/tasks/F0-02-repositorio-git.md` (necesita datos del usuario) |
-| Después | F0-03 (mover el frontend a `web/`) y Lotes 5–7 del plan por lotes (adaptar el frontend a las rutas nuevas) |
-| Bloqueos | F0-02 y F0-03 esperan decisiones del usuario (ver "Pendientes de decisión") |
+| Fase | **Backend completo y frontend en `web/`** (F0-03, W-01..W-07 implementadas); falta remoto git y entrega |
+| Última tarea cerrada | W-07 — `docker compose up --build` levanta `db`, `api` y `web` (2026-11-15); gestor del front: **pnpm** |
+| Tarea en curso | Verificación manual restante de W-04/W-05 (crear/editar/reordenar/publicar con el navegador) |
+| **Siguiente tarea** | Revisión del juez (Opus) y de Luis de las ramas `feature/F0-03-web` y `feature/W-07-docker-web`; luego **F0-02 — remoto en GitHub** (necesita datos del usuario) |
+| Después | B6-01 (`.strict()` en auth), P-01..P-06 (Postman), B5-02 README final con `web/`, E-01 (clonado en limpio) |
+| Bloqueos | F0-02: quién sube el monorepo y con qué cuentas (la guía lo asigna a Luis). `frontend_miniAula/` (carpeta antigua) queda como copia; borrar cuando se confirme |
 | Avance de requisitos | Backend: 16/16 RF (RF-02 con logout documentado), 8/8 RN y 12/12 RT-B en ✅ (ver `docs/requisitos.md`) |
 
 ## Protocolo de sesión
@@ -85,4 +85,6 @@ actualizar lo mismo que hace `cerrar-tarea`.
 | 2026-11-15 | Lote 3 (B3-01..06) | Rutas alineadas al PDF (25 filas ✅), `lessonAccess`, `optionalUser`, transacciones y recálculo de `completado` |
 | 2026-11-15 | Lote 4 y B5 | DELETE 204, `panel.service` dividido, `npm run smoke` (8/8), Postman regenerado, README final |
 | 2026-11-15 | Revisión propia | Fallo corregido: `q=%` devolvía todo el catálogo (comodines LIKE sin escapar → `utils/search.js`); smoke ampliado, 8/8 |
+| 2026-11-15 | Verificación y guía | Smoke 8/8, CORS y Swagger OK con Docker; flujo de Postman probado contra la API real. Guía de lo que falta + prompt de Postman en Descargas |
+| 2026-11-15 | Guía del frontend | Lectura completa de `../frontend_miniAula` (sin modificarlo) y respuestas reales de la API. Tareas W-01..W-07 con archivos, cambios y aceptación en `Guia-Frontend-MiniAula.md` (Descargas, **no** copiar al repo) |
 | 2026-11-15 | Auditoría contra el plan | `ownsCourse` y la migración en funciones cortas; inscripción a curso no publicado → 422; smoke verifica el panel (RF-16); `.github/pull_request_template.md` (F0-04); git local con 19 ramas de tarea y merge commits |
