@@ -1,0 +1,46 @@
+# Valores por defecto SOLO de desarrollo (patrón ${VAR:-valor}); para sobrescribirlos crear un .env (ver .env.example).
+services:
+  db:
+    image: mysql:8.4
+    container_name: miniaula-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-dev_root_password}
+      MYSQL_DATABASE: ${DB_NAME:-miniaula}
+    ports:
+      - "${DB_HOST_PORT:-3306}:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -u root -p\"$$MYSQL_ROOT_PASSWORD\""]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: miniaula-api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: ${NODE_ENV:-production}
+      PORT: 3000
+      DB_HOST: db
+      DB_PORT: 3306
+      DB_NAME: ${DB_NAME:-miniaula}
+      DB_USER: root
+      DB_PASSWORD: ${DB_PASSWORD:-dev_root_password}
+      JWT_SECRET: ${JWT_SECRET:-dev_only_jwt_secret_change_me}
+      JWT_EXPIRES_IN: ${JWT_EXPIRES_IN:-24h}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
+      LOGIN_RATE_LIMIT_MAX: ${LOGIN_RATE_LIMIT_MAX:-10}
+
+volumes:
+  mysql_data:
