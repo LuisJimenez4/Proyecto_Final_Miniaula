@@ -5,7 +5,7 @@ del repo de la materia (`practicareact`). Se ampliará cuando empiece la fase de
 
 ## 1. Stack
 
-React 19 + Vite · JavaScript (JSX, módulos ES) · React Router (paquete `react-router`, como en clase) ·
+React 19 + Vite · JavaScript (JSX, módulos ES) · React Router (paquete `react-router-dom` v7, como usa el código) ·
 Axios · React Hook Form + Zod · Tailwind CSS. Sin TypeScript. Dependencia nueva solo con justificación.
 
 ## 2. Requisitos técnicos del PDF
