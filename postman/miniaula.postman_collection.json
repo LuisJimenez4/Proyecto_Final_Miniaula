@@ -1,0 +1,1033 @@
+{
+  "info": {
+    "name": "MiniAula API",
+    "description": "Generada desde la especificación OpenAPI (/api/docs). Ejecutar primero los dos login para guardar {{tokenInstructor}} y {{tokenEstudiante}}; ajustar {{cursoId}}, {{leccionId}} y {{preguntaId}}. Los query params vienen desactivados: actívalos al probarlos.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "tokenInstructor",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "tokenEstudiante",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "cursoId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "leccionId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "preguntaId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "id",
+      "value": "1",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Sistema",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "description": "Verificación de salud (usada para comprobar que la API levantó)",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "health"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Autenticación",
+      "item": [
+        {
+          "name": "POST /auth/register",
+          "request": {
+            "method": "POST",
+            "description": "Registrar un usuario (RF-01)",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Laura Pérez\",\n  \"email\": \"laura@estudiante.com\",\n  \"password\": \"password123\",\n  \"rol\": \"estudiante\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "register"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /auth/login (instructor García)",
+          "request": {
+            "method": "POST",
+            "description": "Iniciar sesión y obtener el token JWT (RF-02). Rate limit: solo cuentan los intentos fallidos",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"garcia@miniaula.com\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json();",
+                  "if (r.token) pm.collectionVariables.set('tokenInstructor', r.token);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "POST /auth/login (estudiante Ana)",
+          "request": {
+            "method": "POST",
+            "description": "Iniciar sesión y obtener el token JWT (RF-02). Rate limit: solo cuentan los intentos fallidos",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"ana@estudiante.com\",\n  \"password\": \"password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "auth",
+                "login"
+              ]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const r = pm.response.json();",
+                  "if (r.token) pm.collectionVariables.set('tokenEstudiante', r.token);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Perfil de usuario",
+      "item": [
+        {
+          "name": "GET /users/me",
+          "request": {
+            "method": "GET",
+            "description": "Perfil del usuario autenticado (RF-03)",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenEstudiante}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /users/me",
+          "request": {
+            "method": "PUT",
+            "description": "Actualizar el perfil (RF-03). nombre y email son obligatorios; password es opcional",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenEstudiante}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Ana López\",\n  \"email\": \"ana@estudiante.com\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/users/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "users",
+                "me"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cursos",
+      "item": [
+        {
+          "name": "GET /cursos",
+          "request": {
+            "method": "GET",
+            "description": "Catálogo público: solo cursos publicados (RF-04, RN-05)",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cursos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cursos"
+              ],
+              "query": [
+                {
+                  "key": "q",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "categoria",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "nivel",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "page",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "limit",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /cursos/{id}",
+          "request": {
+            "method": "GET",
+            "description": "Detalle del curso con temario SIN contenido ni preguntas (RF-05). Si es borrador/archivado solo lo ve su instructor dueño (enviando token); para el resto es 404",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/cursos/{{cursoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cursos",
+                "{{cursoId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cursos (instructor)",
+      "item": [
+        {
+          "name": "POST /cursos",
+          "request": {
+            "method": "POST",
+            "description": "Crear un curso en borrador (RF-06)",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenInstructor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Node.js desde cero\",\n  \"descripcion\": \"Aprende a construir APIs con Node.js y Express.\",\n  \"categoria\": \"Programación\",\n  \"nivel\": \"Básico\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cursos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cursos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /cursos/{id}",
+          "request": {
+            "method": "PUT",
+            "description": "Editar el curso; exige el objeto completo (RF-06, RN-07)",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenInstructor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Node.js desde cero\",\n  \"descripcion\": \"Aprende a construir APIs con Node.js y Express.\",\n  \"categoria\": \"Programación\",\n  \"nivel\": \"Básico\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cursos/{{cursoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cursos",
+                "{{cursoId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /cursos/{id}",
+          "request": {
+            "method": "DELETE",
+            "description": "Eliminar un curso sin inscritos (RF-06, RN-06). Con inscritos se archiva",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenInstructor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cursos/{{cursoId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cursos",
+                "{{cursoId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /cursos/{id}/estado",
+          "request": {
+            "method": "PATCH",
+            "description": "Publicar, archivar o devolver a borrador (RF-07, RN-05). Publicar exige ≥ 1 lección y cuestionarios con preguntas (regla añadida)",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenInstructor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"publicado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cursos/{{cursoId}}/estado",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cursos",
+                "{{cursoId}}",
+                "estado"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lecciones (instructor)",
+      "item": [
+        {
+          "name": "POST /cursos/{id}/lecciones",
+          "request": {
+            "method": "POST",
+            "description": "Crear una lección al final del curso (RF-08, RN-07)",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenInstructor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Introducción\",\n  \"tipo\": \"contenido\",\n  \"contenido\": \"Bienvenido al curso\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cursos/{{cursoId}}/lecciones",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cursos",
+                "{{cursoId}}",
+                "lecciones"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PATCH /cursos/{id}/lecciones/orden",
+          "request": {
+            "method": "PATCH",
+            "description": "Reordenar con la lista COMPLETA de ids, sin repetidos (RF-09). RN-01 usa siempre el orden actual",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenInstructor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"orden\": [\n    3,\n    1,\n    2\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cursos/{{cursoId}}/lecciones/orden",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cursos",
+                "{{cursoId}}",
+                "lecciones",
+                "orden"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /lecciones/{id}",
+          "request": {
+            "method": "PUT",
+            "description": "Editar la lección (RF-08, RN-07); el tipo no cambia",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenInstructor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Introducción (v2)\",\n  \"contenido\": \"Texto actualizado\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/lecciones/{{leccionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lecciones",
+                "{{leccionId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /lecciones/{id}",
+          "request": {
+            "method": "DELETE",
+            "description": "Eliminar la lección, su progreso y reordenar el resto (RF-08). No se permite borrar la última de un curso publicado",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenInstructor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/lecciones/{{leccionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lecciones",
+                "{{leccionId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inscripciones y progreso",
+      "item": [
+        {
+          "name": "POST /cursos/{id}/inscripcion",
+          "request": {
+            "method": "POST",
+            "description": "Inscribirse en un curso publicado (RF-11, RN-04)",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenEstudiante}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cursos/{{cursoId}}/inscripcion",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cursos",
+                "{{cursoId}}",
+                "inscripcion"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /cursos/{id}/progreso",
+          "request": {
+            "method": "GET",
+            "description": "Progreso propio: todas las lecciones con desbloqueo, intentos y mejor nota; sin contenido (RF-13, RN-01, RN-08)",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenEstudiante}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/cursos/{{cursoId}}/progreso",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "cursos",
+                "{{cursoId}}",
+                "progreso"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /inscripciones/mias",
+          "request": {
+            "method": "GET",
+            "description": "Mis inscripciones con porcentaje de avance (RF-11, RN-08)",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenEstudiante}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inscripciones/mias",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "inscripciones",
+                "mias"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Lecciones (estudiante)",
+      "item": [
+        {
+          "name": "GET /lecciones/{id}",
+          "request": {
+            "method": "GET",
+            "description": "Abrir una lección (RF-10, RN-01, RN-02, RT-B03). Estudiante inscrito: 403 LESSON_LOCKED si la anterior no está completada y preguntas SIN indiceCorrecto. Instructor dueño (ADR-07): contenido y preguntas CON indiceCorrecto",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenEstudiante}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/lecciones/{{leccionId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lecciones",
+                "{{leccionId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /lecciones/{id}/completar",
+          "request": {
+            "method": "POST",
+            "description": "Completar una lección de contenido (RF-12, RN-01, RT-B03). Idempotente; los cuestionarios responden 422",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenEstudiante}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/lecciones/{{leccionId}}/completar",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lecciones",
+                "{{leccionId}}",
+                "completar"
+              ]
+            }
+          }
+        },
+        {
+          "name": "POST /lecciones/{id}/intentos",
+          "request": {
+            "method": "POST",
+            "description": "Enviar un intento de cuestionario (RF-15, RN-01, RN-02, RN-03). Máximo 3; se guarda la mejor nota. La nota se calcula en el servidor",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenEstudiante}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"respuestas\": [\n    {\n      \"preguntaId\": 1,\n      \"indiceSeleccionado\": 2\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/lecciones/{{leccionId}}/intentos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lecciones",
+                "{{leccionId}}",
+                "intentos"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Preguntas",
+      "item": [
+        {
+          "name": "POST /lecciones/{id}/preguntas",
+          "request": {
+            "method": "POST",
+            "description": "Añadir una pregunta a un cuestionario (RF-14, RN-02, RN-07). indiceCorrecto debe ser < opciones.length",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenInstructor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enunciado\": \"¿Qué palabra declara una constante?\",\n  \"opciones\": [\n    \"var\",\n    \"let\",\n    \"const\"\n  ],\n  \"indiceCorrecto\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/lecciones/{{leccionId}}/preguntas",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "lecciones",
+                "{{leccionId}}",
+                "preguntas"
+              ]
+            }
+          }
+        },
+        {
+          "name": "PUT /preguntas/{id}",
+          "request": {
+            "method": "PUT",
+            "description": "Editar una pregunta con el objeto completo (RF-14, RN-07). Se vuelve a validar indiceCorrecto < opciones.length",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenInstructor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"enunciado\": \"¿Qué palabra declara una constante?\",\n  \"opciones\": [\n    \"var\",\n    \"let\",\n    \"const\"\n  ],\n  \"indiceCorrecto\": 2\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/preguntas/{{preguntaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "preguntas",
+                "{{preguntaId}}"
+              ]
+            }
+          }
+        },
+        {
+          "name": "DELETE /preguntas/{id}",
+          "request": {
+            "method": "DELETE",
+            "description": "Eliminar una pregunta (RF-14, RN-07). No se permite borrar la última de un cuestionario de un curso publicado",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenInstructor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/preguntas/{{preguntaId}}",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "preguntas",
+                "{{preguntaId}}"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Panel del instructor",
+      "item": [
+        {
+          "name": "GET /instructor/cursos",
+          "request": {
+            "method": "GET",
+            "description": "Mis cursos (todos los estados) con totalLecciones y totalInscripciones",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenInstructor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/instructor/cursos",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "instructor",
+                "cursos"
+              ]
+            }
+          }
+        },
+        {
+          "name": "GET /instructor/cursos/{id}/resumen",
+          "request": {
+            "method": "GET",
+            "description": "Panel de un curso propio: inscritos, completaron, progreso y nota promedio, avance por lección y lección de mayor caída (RF-16, RN-07)",
+            "header": [],
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{tokenInstructor}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/instructor/cursos/{{cursoId}}/resumen",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "instructor",
+                "cursos",
+                "{{cursoId}}",
+                "resumen"
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
