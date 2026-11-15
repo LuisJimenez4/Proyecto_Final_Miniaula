@@ -11,7 +11,7 @@
 | Fase | **Backend completo (Fases 1–5)**; falta repo git, frontend y entrega |
 | Última tarea cerrada | B5-02 — README (2026-11-15); todas las B1–B5 cerradas (`odd/tasks/`) |
 | Tarea en curso | — |
-| **Siguiente tarea** | **Revisión del juez (Opus) del diff de B1–B5** y luego **F0-02 — Repositorio git** → `odd/tasks/F0-02-repositorio-git.md` (necesita datos del usuario) |
+| **Siguiente tarea** | **Revisión del juez (Opus) del diff de B1–B5** y luego **F0-02 — remoto en GitHub** → `odd/tasks/F0-02-repositorio-git.md` (necesita datos del usuario) |
 | Después | F0-03 (mover el frontend a `web/`) y Lotes 5–7 del plan por lotes (adaptar el frontend a las rutas nuevas) |
 | Bloqueos | F0-02 y F0-03 esperan decisiones del usuario (ver "Pendientes de decisión") |
 | Avance de requisitos | Backend: 16/16 RF (RF-02 con logout documentado), 8/8 RN y 12/12 RT-B en ✅ (ver `docs/requisitos.md`) |
@@ -58,7 +58,8 @@ actualizar lo mismo que hace `cerrar-tarea`.
 
 - El frontend (`../frontend_miniAula`) usa rutas antiguas y `search` en vez de `q`: se adapta en los Lotes 5–7.
 - `HANDOFF_FRONTEND.md` describe rutas antiguas; no usarlo como contrato (el contrato es `docs/api-contrato.md`).
-- Sin repositorio git: nada está versionado ni hay ramas/PR todavía.
+- Git existe solo **en local** (sin remoto): las ramas `feature/<ID>` se reconstruyeron a posteriori y todos los commits son de Alejandro
+  (también las tareas que el plan asigna a Luis); falta crear el repo en GitHub, invitar a Luis y proteger `main` (F0-02).
 - Sin pruebas unitarias; solo `npm run smoke` (8 pruebas contra la API en Docker). Las rutas de error de `PUT` completos
   del frontend no se han probado con el navegador.
 - Discrepancias documentación ↔ código (se siguió el código): ver sección siguiente.
@@ -84,3 +85,4 @@ actualizar lo mismo que hace `cerrar-tarea`.
 | 2026-11-15 | Lote 3 (B3-01..06) | Rutas alineadas al PDF (25 filas ✅), `lessonAccess`, `optionalUser`, transacciones y recálculo de `completado` |
 | 2026-11-15 | Lote 4 y B5 | DELETE 204, `panel.service` dividido, `npm run smoke` (8/8), Postman regenerado, README final |
 | 2026-11-15 | Revisión propia | Fallo corregido: `q=%` devolvía todo el catálogo (comodines LIKE sin escapar → `utils/search.js`); smoke ampliado, 8/8 |
+| 2026-11-15 | Auditoría contra el plan | `ownsCourse` y la migración en funciones cortas; inscripción a curso no publicado → 422; smoke verifica el panel (RF-16); `.github/pull_request_template.md` (F0-04); git local con 19 ramas de tarea y merge commits |
