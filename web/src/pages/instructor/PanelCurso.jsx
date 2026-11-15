@@ -25,8 +25,8 @@ const MayorCaida = ({ caida }) => (
       <span className="text-xs font-bold text-amber-900 uppercase tracking-wider">Lección de mayor caída</span>
       <h3 className="text-lg font-extrabold text-slate-900 mt-0.5 break-words">Lección {caida.orden}: {caida.titulo}</h3>
       <p className="text-sm text-slate-700 mt-1">
-        <strong>{caida.detenidos}</strong> {caida.detenidos === 1 ? 'estudiante se detiene' : 'estudiantes se detienen'} aquí.
-        Revisa la dificultad de esta lección o refuerza el material anterior.
+        <strong>{caida.detenidos}</strong> {caida.detenidos === 1 ? 'estudiante no llegó' : 'estudiantes no llegaron'} a esta lección porque {caida.detenidos === 1 ? 'se quedó' : 'se quedaron'} en la anterior.
+        Revisa la dificultad de la lección previa o refuerza su material.
       </p>
     </div>
   </div>
