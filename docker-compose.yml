@@ -42,5 +42,17 @@ services:
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:5173}
       LOGIN_RATE_LIMIT_MAX: ${LOGIN_RATE_LIMIT_MAX:-10}
 
+  web:
+    build:
+      context: ./web
+      args:
+        VITE_API_URL: ${VITE_API_URL:-http://localhost:3000/api}
+    container_name: miniaula-web
+    restart: unless-stopped
+    depends_on:
+      - api
+    ports:
+      - "5173:80"
+
 volumes:
   mysql_data:
