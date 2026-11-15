@@ -11,9 +11,9 @@ const VARIANTS = {
 };
 
 const SIZES = {
-  sm: 'px-3 py-1.5 text-xs font-medium rounded-md',
-  md: 'px-4 py-2 text-sm font-medium rounded-lg',
-  lg: 'px-6 py-3 text-base font-semibold rounded-lg',
+  sm: 'px-3 py-1.5 text-xs font-medium rounded-md min-h-[44px] sm:min-h-0',
+  md: 'px-4 py-2 text-sm font-medium rounded-lg min-h-[44px] sm:min-h-0',
+  lg: 'px-6 py-3 text-base font-semibold rounded-lg min-h-[44px]',
 };
 
 export const Button = ({

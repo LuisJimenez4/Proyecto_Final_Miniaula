@@ -30,10 +30,9 @@ const desktopLink = ({ isActive }) =>
 const mobileLink = ({ isActive }) =>
   `flex items-center px-3 py-2.5 text-base font-medium rounded-lg transition-colors ${isActive ? 'text-indigo-600 bg-indigo-50 font-semibold' : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100'}`;
 
-const Submenu = ({ item }) => {
-  const [open, setOpen] = useState(false);
+/** Cierra un menú desplegable al hacer clic fuera o pulsar Escape. */
+const useDismiss = (open, setOpen) => {
   const ref = useRef(null);
-
   useEffect(() => {
     if (!open) return undefined;
     const onClickOutside = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
@@ -44,7 +43,13 @@ const Submenu = ({ item }) => {
       document.removeEventListener('mousedown', onClickOutside);
       document.removeEventListener('keydown', onKey);
     };
-  }, [open]);
+  }, [open, setOpen]);
+  return ref;
+};
+
+const Submenu = ({ item }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useDismiss(open, setOpen);
 
   return (
     <div ref={ref} className="relative">
@@ -61,6 +66,37 @@ const Submenu = ({ item }) => {
               {child.label}
             </NavLink>
           ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+/** Avatar con menú: perfil y cerrar sesión. */
+const UserMenu = ({ user, onLogout }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useDismiss(open, setOpen);
+
+  return (
+    <div ref={ref} className="relative">
+      <button type="button" onClick={() => setOpen((v) => !v)} aria-haspopup="menu" aria-expanded={open} className="flex items-center space-x-2.5 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
+        <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs uppercase">{user?.nombre ? user.nombre.charAt(0) : 'U'}</div>
+        <div className="flex flex-col text-left">
+          <span className="text-xs font-semibold text-slate-800 line-clamp-1 max-w-[120px]">{user?.nombre}</span>
+          <span className="text-[10px] capitalize text-indigo-600 font-medium">{user?.rol}</span>
+        </div>
+        <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${open ? 'rotate-180' : ''}`} />
+      </button>
+      {open && (
+        <div role="menu" className="absolute right-0 mt-2 w-48 rounded-xl border border-slate-200 bg-white shadow-lg py-1 z-50">
+          <Link to="/perfil" role="menuitem" onClick={() => setOpen(false)} className="flex items-center px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50">
+            <User className="w-4 h-4 mr-2 text-slate-400" />
+            Mi perfil
+          </Link>
+          <button type="button" role="menuitem" onClick={() => { setOpen(false); onLogout(); }} className="w-full flex items-center px-4 py-2.5 text-sm text-rose-600 hover:bg-rose-50">
+            <LogOut className="w-4 h-4 mr-2" />
+            Cerrar sesión
+          </button>
         </div>
       )}
     </div>
@@ -110,18 +146,7 @@ export const Navbar = () => {
 
           <div className="hidden md:flex items-center space-x-3">
             {isLoggedIn ? (
-              <div className="flex items-center space-x-3">
-                <Link to="/perfil" className="flex items-center space-x-2.5 px-3 py-1.5 rounded-lg border border-slate-200 hover:bg-slate-50 transition-colors">
-                  <div className="w-8 h-8 rounded-full bg-indigo-100 text-indigo-700 flex items-center justify-center font-bold text-xs uppercase">{user?.nombre ? user.nombre.charAt(0) : 'U'}</div>
-                  <div className="flex flex-col text-left">
-                    <span className="text-xs font-semibold text-slate-800 line-clamp-1 max-w-[120px]">{user?.nombre}</span>
-                    <span className="text-[10px] capitalize text-indigo-600 font-medium">{user?.rol}</span>
-                  </div>
-                </Link>
-                <Button variant="ghost" size="sm" onClick={handleLogout} title="Cerrar sesión" aria-label="Cerrar sesión">
-                  <LogOut className="w-4 h-4 text-slate-500 hover:text-rose-600" />
-                </Button>
-              </div>
+              <UserMenu user={user} onLogout={handleLogout} />
             ) : (
               <div className="flex items-center space-x-2">
                 <Link to="/login"><Button variant="ghost" size="sm">Iniciar sesión</Button></Link>

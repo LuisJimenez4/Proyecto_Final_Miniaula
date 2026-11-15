@@ -1,5 +1,6 @@
 import React from 'react';
-import { Loader2, AlertCircle, Inbox, RefreshCw } from 'lucide-react';
+import { AlertCircle, Inbox, RefreshCw } from 'lucide-react';
+import Spinner from './Spinner';
 import Button from './Button';
 
 /**
@@ -21,10 +22,7 @@ export const StatusFeedback = ({
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center py-16 px-4 text-center">
-        <div className="relative">
-          <div className="w-12 h-12 rounded-full border-4 border-indigo-100 border-t-indigo-600 animate-spin" />
-          <Loader2 className="w-6 h-6 text-indigo-600 absolute inset-0 m-auto animate-pulse" />
-        </div>
+        <Spinner size="lg" label={loadingMessage} />
         <p className="mt-4 text-sm font-medium text-slate-600">{loadingMessage}</p>
       </div>
     );
