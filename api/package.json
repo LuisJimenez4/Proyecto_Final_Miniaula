@@ -1,0 +1,29 @@
+{
+  "name": "miniaula-api",
+  "version": "1.0.0",
+  "description": "API REST MiniAula - Plataforma de cursos cortos",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "node src/index.js",
+    "dev": "node --watch src/index.js",
+    "migrate": "node src/database/migrate.js",
+    "seed": "node src/database/seed.js",
+    "smoke": "node --test test/smoke.test.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^5.1.0",
+    "express-rate-limit": "^7.5.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.2",
+    "morgan": "^1.10.0",
+    "mysql2": "^3.14.1",
+    "sequelize": "^6.37.7",
+    "swagger-ui-express": "^5.0.1",
+    "umzug": "^3.8.3",
+    "zod": "^3.24.4"
+  }
+}
